@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">WholesaleApp</string>
+    <string name="email_empty_message">ENTER E-MAIL</string>
+    <string name="pass_empty_string">PASSWORD CONNOT BE EMPTY</string>
+    <string name="email_wrong_format_string">ENTER RIGHT EMAIL</string>
+    <string name="pass_not_same_string">PASSWORDS DO NOT MATCH</string>
+    <string name="pass_wrong_format_string">PASSWORD WRONG FORMAT</string>
 </resources>

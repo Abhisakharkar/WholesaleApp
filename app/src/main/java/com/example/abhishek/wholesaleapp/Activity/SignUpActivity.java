@@ -58,8 +58,8 @@ public class SignUpActivity
 
     //Contract Methods
     @Override
-    public void showSnackbar(String message) {
-        final Snackbar snackbar = Snackbar.make(parentLayout, message, Snackbar.LENGTH_SHORT);
+    public void showSnackbar(String message, int length) {
+        final Snackbar snackbar = Snackbar.make(parentLayout, message, length);
         snackbar.setAction("Ok", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
