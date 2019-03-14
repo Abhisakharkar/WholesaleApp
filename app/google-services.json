@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "4791702599",
+    "firebase_url": "https://wholesaleapp-fd00b.firebaseio.com",
+    "project_id": "wholesaleapp-fd00b",
+    "storage_bucket": "wholesaleapp-fd00b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:4791702599:android:2b964ba5a240770d",
+        "android_client_info": {
+          "package_name": "com.example.abhishek.wholesaleapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "4791702599-r1mcogv9qvsni8c1dfkl94seub1u7e6g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.abhishek.wholesaleapp",
+            "certificate_hash": "7b9aafbe6dca781e530b5fb2e4d0b91e4266dc1e"
+          }
+        },
+        {
+          "client_id": "4791702599-en26vmor6nr0lm5r69d886n6l6aq8ehq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyYOmYAAvXVwLT_RwbhRsNWY8_9Y4spSE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "4791702599-en26vmor6nr0lm5r69d886n6l6aq8ehq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

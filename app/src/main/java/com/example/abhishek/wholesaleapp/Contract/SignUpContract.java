@@ -7,6 +7,8 @@ public interface SignUpContract {
 
     public interface View {
 
+        public void showSnackbar(String message);
+
     }
 
     public interface Presenter {

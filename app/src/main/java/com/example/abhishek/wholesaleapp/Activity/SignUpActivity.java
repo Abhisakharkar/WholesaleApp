@@ -1,6 +1,8 @@
 package com.example.abhishek.wholesaleapp.Activity;
 
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -17,6 +19,7 @@ public class SignUpActivity
         extends AppCompatActivity
         implements SignUpContract.View, TextView.OnEditorActionListener {
 
+    private ConstraintLayout parentLayout;
     private EditText mailEdittext, passEdittext, confirmPassEdittext;
     private Button signUpBtn;
 
@@ -27,6 +30,7 @@ public class SignUpActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        parentLayout = findViewById(R.id.signupactivity_parent_layout);
         mailEdittext = findViewById(R.id.signupactivity_mail_edittext);
         passEdittext = findViewById(R.id.signupactivity_pass_edittext);
         confirmPassEdittext = findViewById(R.id.signupactivity_confirm_pass_edittext);
@@ -35,6 +39,7 @@ public class SignUpActivity
         presenter = new SignUpPresenter(this, this);
     }
 
+    //UI Methods
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText());
@@ -49,5 +54,18 @@ public class SignUpActivity
 
     public void SignUpButtonOnClick(View view) {
         presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText());
+    }
+
+    //Contract Methods
+    @Override
+    public void showSnackbar(String message) {
+        final Snackbar snackbar = Snackbar.make(parentLayout, message, Snackbar.LENGTH_SHORT);
+        snackbar.setAction("Ok", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.show();
     }
 }
