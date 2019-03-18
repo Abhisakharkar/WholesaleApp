@@ -97,7 +97,7 @@ public class SignUpActivity
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
             tmf.init(keyStore);
 
-            URL url = new URL("https://certs.cac.washington.edu/CAtest/");
+            URL url = new URL("url");
             HttpsURLConnection urlConnection =
                     (HttpsURLConnection) url.openConnection();
 //                urlConnection.setSSLSocketFactory(getSocketFactory());
