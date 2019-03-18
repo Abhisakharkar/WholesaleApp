@@ -1,7 +1,6 @@
 package com.example.abhishek.wholesaleapp.Presenter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.util.Log;
@@ -11,19 +10,13 @@ import com.example.abhishek.wholesaleapp.Contract.SignUpContract;
 
 import com.example.abhishek.wholesaleapp.Enum.SignUpEnum;
 import com.example.abhishek.wholesaleapp.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthActionCodeException;
 import com.google.firebase.auth.FirebaseAuthEmailException;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 import java.util.regex.Pattern;
 
@@ -53,16 +46,26 @@ public class SignUpPresenter implements SignUpContract.Presenter {
         SignUpEnum validateResult = validateFormData(mail, pass, confirmPass);
         if (validateResult == SignUpEnum.OK) {
 
-            FirebaseAuth
-                    .getInstance()
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            firebaseAuth
                     .createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener((task) -> {
                         if (task.isSuccessful()) {
                             //sign up successfull
                             //TODO send verification email
+
+                            task.getResult().getUser().sendEmailVerification()
+                                    .addOnCompleteListener((verifyTask) -> {
+                                        if (verifyTask.isSuccessful()) {
+                                            Log.d(TAG, "signUp: verification emiail sent successfully !");
+                                        } else {
+                                            Log.e(TAG, "signUp: send verification email error\n" + verifyTask.getException().getMessage());
+                                        }
+                                    });
                             //TODO save user data
                             //TODO goto profile activity
                         } else {
+                            //TODO remove below 2 lines after debugging
                             Log.e(TAG, "signUp: " + task.getException());
                             signUpView.showSnackbar("Error : See Logs", Snackbar.LENGTH_LONG);
 
@@ -75,7 +78,6 @@ public class SignUpPresenter implements SignUpContract.Presenter {
             showValidatorMessage(validateResult);
         }
     }
-
 
     @Override
     public void showValidatorMessage(SignUpEnum validationResult) {

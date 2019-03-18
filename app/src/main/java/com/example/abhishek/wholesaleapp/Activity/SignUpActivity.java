@@ -15,6 +15,15 @@ import com.example.abhishek.wholesaleapp.Contract.SignUpContract;
 import com.example.abhishek.wholesaleapp.Presenter.SignUpPresenter;
 import com.example.abhishek.wholesaleapp.R;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.TrustManagerFactory;
+
 public class SignUpActivity
         extends AppCompatActivity
         implements SignUpContract.View, TextView.OnEditorActionListener {
@@ -68,4 +77,37 @@ public class SignUpActivity
         });
         snackbar.show();
     }
+
+
+    //TEMP METHOD
+    public void temp() {
+        try {
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            InputStream caInput = getResources().openRawResource(R.raw.MyRootCA);
+            Certificate ca;
+            ca = cf.generateCertificate(caInput);
+            caInput.close();
+
+            String keyStoreType = KeyStore.getDefaultType();
+            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+            keyStore.load(null, null);
+            keyStore.setCertificateEntry("ca", ca);
+
+            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+            tmf.init(keyStore);
+
+            URL url = new URL("https://certs.cac.washington.edu/CAtest/");
+            HttpsURLConnection urlConnection =
+                    (HttpsURLConnection) url.openConnection();
+//                urlConnection.setSSLSocketFactory(getSocketFactory());
+            InputStream in = urlConnection.getInputStream();
+//                copyInputStreamToOutputStream(in, System.out);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

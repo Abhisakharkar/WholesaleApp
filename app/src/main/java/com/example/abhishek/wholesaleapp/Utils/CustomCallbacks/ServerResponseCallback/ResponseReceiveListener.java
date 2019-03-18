@@ -1,4 +1,4 @@
-package com.example.abhishek.wholesaleapp.Utils.CustomCallbacks;
+package com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback;
 
 import org.json.JSONObject;
 
