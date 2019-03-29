@@ -18,8 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.SignInActivity"></activity>
-        <activity android:name=".Activity.HomeActivity"></activity>
+        <activity android:name=".Activity.SignInActivity" />
+        <activity android:name=".Activity.HomeActivity" />
     </application>
 
 </manifest>
