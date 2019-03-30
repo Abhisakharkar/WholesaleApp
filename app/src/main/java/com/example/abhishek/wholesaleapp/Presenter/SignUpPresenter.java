@@ -6,10 +6,17 @@ import android.text.Editable;
 import android.util.Log;
 import android.util.Patterns;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.abhishek.wholesaleapp.Contract.SignUpContract;
 
 import com.example.abhishek.wholesaleapp.Enum.SignUpEnum;
 import com.example.abhishek.wholesaleapp.R;
+import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ServerResponse;
+import com.example.abhishek.wholesaleapp.Utils.NetworkUtils.WebService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthActionCodeException;
 import com.google.firebase.auth.FirebaseAuthEmailException;
@@ -18,7 +25,25 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.regex.Pattern;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
 
 import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.EMAIL_EMPTY;
 import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.EMAIL_WRONG_FORMAT;
@@ -32,10 +57,14 @@ public class SignUpPresenter implements SignUpContract.Presenter {
 
     private SignUpContract.View signUpView;
     private Context context;
+    private WebService webService;
+    private ServerResponse serverResponse;
 
     public SignUpPresenter(Context context, SignUpContract.View signUpView) {
         this.context = context;
         this.signUpView = signUpView;
+        webService = WebService.getWebServiceInstance(context.getApplicationContext());
+        serverResponse = WebService.getCallbackInstance();
     }
 
 
@@ -51,6 +80,11 @@ public class SignUpPresenter implements SignUpContract.Presenter {
                     .createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener((task) -> {
                         if (task.isSuccessful()) {
+
+                            //TEMPORARY CODE --- TO CHECK SERVER INTEGRATION
+                            Log.d(TAG, "Token : "+task.getResult().getUser().getIdToken(false).toString());
+                            webService.temporaryMethodToCheckSSLwithServer(task.getResult().getUser().getIdToken(false).toString());
+
                             //sign up successfull
                             //TODO send verification email
 

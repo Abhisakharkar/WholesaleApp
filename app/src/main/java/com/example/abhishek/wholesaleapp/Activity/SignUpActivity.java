@@ -65,7 +65,7 @@ public class SignUpActivity
         confirmPassEdittext = findViewById(R.id.signupactivity_confirm_pass_edittext);
         passEdittext.setOnEditorActionListener(this);
 
-        presenter = new SignUpPresenter(this, this);
+        presenter = new SignUpPresenter(SignUpActivity.this, this);
     }
 
     //UI Methods
@@ -82,8 +82,8 @@ public class SignUpActivity
     }
 
     public void SignUpButtonOnClick(View view) {
-//        presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText());
-        sendSSLRequest();
+        presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText());
+//        sendSSLRequest();
 
     }
 
