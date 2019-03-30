@@ -59,7 +59,6 @@ public class SignUpActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
         parentLayout = findViewById(R.id.signupactivity_parent_layout);
         mailEdittext = findViewById(R.id.signupactivity_mail_edittext);
         passEdittext = findViewById(R.id.signupactivity_pass_edittext);
@@ -72,7 +71,15 @@ public class SignUpActivity
     //UI Methods
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText());
+        try {
+
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            InputStream inputStream = getResources().openRawResource(R.raw.myrootca);
+            Certificate ca = cf.generateCertificate(inputStream);
+            presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText(),ca);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return true;
     }
 

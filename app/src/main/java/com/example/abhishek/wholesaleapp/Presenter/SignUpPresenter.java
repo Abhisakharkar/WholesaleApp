@@ -1,6 +1,7 @@
 package com.example.abhishek.wholesaleapp.Presenter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.util.Log;
@@ -17,6 +18,8 @@ import com.example.abhishek.wholesaleapp.Enum.SignUpEnum;
 import com.example.abhishek.wholesaleapp.R;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ServerResponse;
 import com.example.abhishek.wholesaleapp.Utils.NetworkUtils.WebService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthActionCodeException;
 import com.google.firebase.auth.FirebaseAuthEmailException;
@@ -24,6 +27,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -59,7 +64,7 @@ public class SignUpPresenter implements SignUpContract.Presenter {
     private Context context;
     private WebService webService;
     private ServerResponse serverResponse;
-
+    private String token;
     public SignUpPresenter(Context context, SignUpContract.View signUpView) {
         this.context = context;
         this.signUpView = signUpView;
@@ -82,8 +87,26 @@ public class SignUpPresenter implements SignUpContract.Presenter {
                         if (task.isSuccessful()) {
 
                             //TEMPORARY CODE --- TO CHECK SERVER INTEGRATION
-                            Log.d(TAG, "Token : "+task.getResult().getUser().getIdToken(false).toString());
-                            webService.temporaryMethodToCheckSSLwithServer(task.getResult().getUser().getIdToken(false).toString(),ca);
+                            //Log.d(TAG, "Token : "+task.getResult().getUser().getIdToken(true).toString());
+                            FirebaseUser mUser = firebaseAuth.getCurrentUser();
+                            mUser.getIdToken(true)
+                                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                                        public void onComplete(@NonNull Task<GetTokenResult> task) {
+                                            if (task.isSuccessful()) {
+                                                String idToken = task.getResult().getToken();
+                                                token=idToken;
+                                                Log.d(TAG, "onComplete: token  "+idToken);
+                                                // Send token to your backend via HTTPS
+                                                // ...
+                                            } else {
+                                                // Handle error -> task.getException();
+                                            }
+                                        }
+                                    });
+
+
+
+                            webService.temporaryMethodToCheckSSLwithServer(token,ca);
 
                             //sign up successfull
                             //TODO send verification email

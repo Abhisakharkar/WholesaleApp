@@ -41,6 +41,7 @@ public class WebService {
     public static WebService instance;
     public static ServerResponse serverResponse;
     private Context context;
+    public Certificate ca;
 
     private RequestQueue requestQueue;
 
@@ -63,9 +64,10 @@ public class WebService {
 
     public void temporaryMethodToCheckSSLwithServer(String token, Certificate ca){
         String path = "/testWholesaleToken";
+        this.ca=ca;
         try{
             JSONObject headers = new JSONObject();
-            headers.put("Authorization",token);
+            headers.put("authorization",token);
 
             sendRequest("POST", path, headers, null);
         }catch (Exception e){
@@ -74,7 +76,8 @@ public class WebService {
     }
 
     private void sendRequest(String requestMethod, String path, JSONObject headers, final JSONObject requestBody) {
-        String URL = "BaseUrl" + path;
+        String BaseUrl="https://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com";
+        String URL = BaseUrl + path;
         int method = 0;
         if (requestMethod.equals("POST")) {
             method = Request.Method.POST;
@@ -117,16 +120,6 @@ public class WebService {
 
         CertificateFactory cf = null;
         try {
-            cf = CertificateFactory.getInstance("X.509");
-            InputStream caInput = context.getResources().openRawResource(R.raw.myrootca);
-            Certificate ca;
-            try {
-                ca = cf.generateCertificate(caInput);
-                Log.e("CERT", "ca=" + ((X509Certificate) ca).getSubjectDN());
-            } finally {
-                caInput.close();
-            }
-
 
             String keyStoreType = KeyStore.getDefaultType();
             KeyStore keyStore = KeyStore.getInstance(keyStoreType);
