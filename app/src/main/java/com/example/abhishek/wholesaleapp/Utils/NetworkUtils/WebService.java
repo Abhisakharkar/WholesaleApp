@@ -1,6 +1,7 @@
 package com.example.abhishek.wholesaleapp.Utils.NetworkUtils;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -60,7 +61,7 @@ public class WebService {
         return serverResponse;
     }
 
-    public void temporaryMethodToCheckSSLwithServer(String token){
+    public void temporaryMethodToCheckSSLwithServer(String token, Certificate ca){
         String path = "/testWholesaleToken";
         try{
             JSONObject headers = new JSONObject();

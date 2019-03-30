@@ -69,7 +69,7 @@ public class SignUpPresenter implements SignUpContract.Presenter {
 
 
     @Override
-    public void signUp(Editable mail, Editable pass, Editable confirmPass) {
+    public void signUp(Editable mail, Editable pass, Editable confirmPass, Certificate ca) {
         String email = mail.toString();
         String password = pass.toString();
         SignUpEnum validateResult = validateFormData(mail, pass, confirmPass);
@@ -83,7 +83,7 @@ public class SignUpPresenter implements SignUpContract.Presenter {
 
                             //TEMPORARY CODE --- TO CHECK SERVER INTEGRATION
                             Log.d(TAG, "Token : "+task.getResult().getUser().getIdToken(false).toString());
-                            webService.temporaryMethodToCheckSSLwithServer(task.getResult().getUser().getIdToken(false).toString());
+                            webService.temporaryMethodToCheckSSLwithServer(task.getResult().getUser().getIdToken(false).toString(),ca);
 
                             //sign up successfull
                             //TODO send verification email

@@ -1,6 +1,7 @@
 package com.example.abhishek.wholesaleapp.Activity;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -82,9 +83,19 @@ public class SignUpActivity
     }
 
     public void SignUpButtonOnClick(View view) {
-        presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText());
-//        sendSSLRequest();
+        try {
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            InputStream inputStream = getResources().openRawResource(R.raw.myrootca);
+            Certificate ca = cf.generateCertificate(inputStream);
 
+            //CLOSE INPUT STREAM PROPERLY ::::::::: MEM LEAK
+            inputStream.close();
+
+            presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText(), ca);
+
+        }catch (Exception e ){
+            e.printStackTrace();
+        }
     }
 
     //Contract Methods
