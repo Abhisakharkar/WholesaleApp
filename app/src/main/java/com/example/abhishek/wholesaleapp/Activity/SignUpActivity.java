@@ -118,121 +118,122 @@ public class SignUpActivity
         snackbar.show();
     }
 
+//
+//    //TEMP METHOD
+//    public void temp() {
+//        try {
+//            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+//            InputStream caInput = getResources().openRawResource(R.raw.myrootca);
+//            Certificate ca;
+//            ca = cf.generateCertificate(caInput);
+//            caInput.close();
+//
+//            String keyStoreType = KeyStore.getDefaultType();
+//            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+//            keyStore.load(null, null);
+//            keyStore.setCertificateEntry("ca", ca);
+//
+//            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+//            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+//            tmf.init(keyStore);
+//
+//            URL url = new URL("url");
+//            HttpsURLConnection urlConnection =
+//                    (HttpsURLConnection) url.openConnection();
+////                urlConnection.setSSLSocketFactory(getSocketFactory());
+//            InputStream in = urlConnection.getInputStream();
+////                copyInputStreamToOutputStream(in, System.out);
+//
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-    //TEMP METHOD
-    public void temp() {
-        try {
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            InputStream caInput = getResources().openRawResource(R.raw.myrootca);
-            Certificate ca;
-            ca = cf.generateCertificate(caInput);
-            caInput.close();
+//    public void sendSSLRequest() {
+//      //  RequestQueue requestQueue = Volley.newRequestQueue(this, new HurlStack(null, getSocketFactory()));
+//        RequestQueue requestQueue = Volley.newRequestQueue(this);
+//        String url = "https://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com:443";
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url
+//                , new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                Log.d("SSL Response", "onResponse: " + response.toString());
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.e("Volley SSL Error", "onErrorResponse: " + error.toString());
+//                Log.e("Volley SSL Error", "onErrorResponse: message : " + error.getMessage());
+//            }
+//        });
+//        requestQueue.add(stringRequest);
+//    }
 
-            String keyStoreType = KeyStore.getDefaultType();
-            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-            keyStore.load(null, null);
-            keyStore.setCertificateEntry("ca", ca);
-
-            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-            tmf.init(keyStore);
-
-            URL url = new URL("url");
-            HttpsURLConnection urlConnection =
-                    (HttpsURLConnection) url.openConnection();
-//                urlConnection.setSSLSocketFactory(getSocketFactory());
-            InputStream in = urlConnection.getInputStream();
-//                copyInputStreamToOutputStream(in, System.out);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void sendSSLRequest() {
-        RequestQueue requestQueue = Volley.newRequestQueue(this, new HurlStack(null, getSocketFactory()));
-        String url = "https://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com:443";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url
-                , new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d("SSL Response", "onResponse: " + response.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Volley SSL Error", "onErrorResponse: " + error.toString());
-                Log.e("Volley SSL Error", "onErrorResponse: message : " + error.getMessage());
-            }
-        });
-        requestQueue.add(stringRequest);
-    }
-
-    private SSLSocketFactory getSocketFactory() {
-
-        CertificateFactory cf = null;
-        try {
-            cf = CertificateFactory.getInstance("X.509");
-            InputStream caInput = getResources().openRawResource(R.raw.myrootca);
-            Certificate ca;
-            try {
-                ca = cf.generateCertificate(caInput);
-                Log.e("CERT", "ca=" + ((X509Certificate) ca).getSubjectDN());
-            } finally {
-                caInput.close();
-            }
-
-
-            String keyStoreType = KeyStore.getDefaultType();
-            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-            keyStore.load(null, null);
-            keyStore.setCertificateEntry("ca", ca);
-
-
-            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-            tmf.init(keyStore);
-
-
-            HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-
-                    Log.e("CipherUsed", session.getCipherSuite());
-                    return hostname.compareTo("ubuntu") == 0; //The Hostname of your server
-
-                }
-            };
-
-
-//            HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);/
-            SSLContext context = null;
-            context = SSLContext.getInstance("TLS");
-
-            context.init(null, tmf.getTrustManagers(), null);
-            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-
-            SSLSocketFactory sf = context.getSocketFactory();
-
-
-            return sf;
-
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
+//    private SSLSocketFactory getSocketFactory() {
+//
+//        CertificateFactory cf = null;
+//        try {
+//            cf = CertificateFactory.getInstance("X.509");
+//            InputStream caInput = getResources().openRawResource(R.raw.myrootca);
+//            Certificate ca;
+//            try {
+//                ca = cf.generateCertificate(caInput);
+//                Log.e("CERT", "ca=" + ((X509Certificate) ca).getSubjectDN());
+//            } finally {
+//                caInput.close();
+//            }
+//
+//
+//            String keyStoreType = KeyStore.getDefaultType();
+//            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+//            keyStore.load(null, null);
+//            keyStore.setCertificateEntry("ca", ca);
+//
+//
+//            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+//            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+//            tmf.init(keyStore);
+//
+//
+//            HostnameVerifier hostnameVerifier = new HostnameVerifier() {
+//                @Override
+//                public boolean verify(String hostname, SSLSession session) {
+//
+//                    Log.e("CipherUsed", session.getCipherSuite());
+//                    return hostname.compareTo("ubuntu") == 0; //The Hostname of your server
+//
+//                }
+//            };
+//
+//
+////            HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);/
+//            SSLContext context = null;
+//            context = SSLContext.getInstance("TLS");
+//
+//            context.init(null, tmf.getTrustManagers(), null);
+//            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+//
+//            SSLSocketFactory sf = context.getSocketFactory();
+//
+//
+//            return sf;
+//
+//        } catch (CertificateException e) {
+//            e.printStackTrace();
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        } catch (KeyStoreException e) {
+//            e.printStackTrace();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (KeyManagementException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return null;
+//    }
 
 }
