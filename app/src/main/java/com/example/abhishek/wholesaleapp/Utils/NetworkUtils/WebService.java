@@ -82,13 +82,13 @@ public class WebService {
             JSONObject body = new JSONObject();
             body.put("Authorization",token);
 
-            sendRequest("POST", path, headers, body);
+//            sendRequest2("POST", path, headers, body);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    private void sendRequest(String requestMethod, String path, JSONObject headers, final JSONObject requestBody) {
+    public void sendRequest(String requestMethod, String path, JSONObject headers, final JSONObject requestBody, ServerResponse serverResponse) {
         String BaseUrl="https://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com";
         String URL = BaseUrl + path;
         int method = 0;
