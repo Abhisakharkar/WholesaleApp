@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -28,6 +29,8 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -106,10 +109,23 @@ public class WebService {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "onErrorResponse: Error : "+error );
+                Log.e(TAG, "onErrorResponse: Error : "+error.getMessage());
                 serverResponse.errorReceived(error);
             }
         }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                HashMap<String, String> headerMap = new HashMap<>();
+                headerMap.put("Content-Type","application/json");
+                try {
+                    headerMap.put("Authorization", headers.getString("Authorization"));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                return headerMap;
+            }
+
             @Override
             public String getBodyContentType() {
                 return "application/json; charset=utf-8";
