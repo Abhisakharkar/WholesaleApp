@@ -1,5 +1,7 @@
 package com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback;
 
+import com.android.volley.VolleyError;
+
 import org.json.JSONObject;
 
 public class ServerResponse {
@@ -16,9 +18,9 @@ public class ServerResponse {
         }
     }
 
-    public void errorReceived(){
+    public void errorReceived(VolleyError error){
         if (responseReceiveListener != null){
-            responseReceiveListener.onErrorReceive();
+            responseReceiveListener.onErrorReceive(error);
         }
     }
 }

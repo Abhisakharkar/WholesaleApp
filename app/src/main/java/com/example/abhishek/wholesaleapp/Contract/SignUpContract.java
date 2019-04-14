@@ -19,7 +19,7 @@ public interface SignUpContract {
 
     public interface Presenter {
 
-        public void signUp(Editable mail, Editable pass, Editable confirmPass, Certificate ca);
+        public void signUp(Editable mail, Editable pass, Editable confirmPass);
 
         public SignUpEnum validateFormData(Editable mail, Editable pass, Editable confirmPass);
 

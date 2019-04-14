@@ -9,6 +9,7 @@ import android.util.Patterns;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -16,6 +17,7 @@ import com.example.abhishek.wholesaleapp.Contract.SignUpContract;
 
 import com.example.abhishek.wholesaleapp.Enum.SignUpEnum;
 import com.example.abhishek.wholesaleapp.R;
+import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ResponseReceiveListener;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ServerResponse;
 import com.example.abhishek.wholesaleapp.Utils.NetworkUtils.WebService;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,6 +32,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +41,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertPathValidatorException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -56,25 +61,27 @@ import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.PASS_EMPTY;
 import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.PASS_NOT_SAME;
 import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.PASS_WRONG_FORMAT;
 
-public class SignUpPresenter implements SignUpContract.Presenter {
+public class SignUpPresenter implements SignUpContract.Presenter, ResponseReceiveListener {
 
     private String TAG = "SignUpPresenter";
 
     private SignUpContract.View signUpView;
     private Context context;
-    private WebService webService;
+    public WebService webService;
     private ServerResponse serverResponse;
-    private String token;
-    public SignUpPresenter(Context context, SignUpContract.View signUpView) {
+
+    public SignUpPresenter(Context context, SignUpContract.View signUpView, WebService webService) {
         this.context = context;
         this.signUpView = signUpView;
-        webService = WebService.getWebServiceInstance(context.getApplicationContext());
+//        webService = WebService.getWebServiceInstance(context.getApplicationContext());
+        this.webService = webService;
         serverResponse = WebService.getCallbackInstance();
+        serverResponse.setResponseReceiveListener(this);
     }
 
 
     @Override
-    public void signUp(Editable mail, Editable pass, Editable confirmPass, Certificate ca) {
+    public void signUp(Editable mail, Editable pass, Editable confirmPass) {
         String email = mail.toString();
         String password = pass.toString();
         SignUpEnum validateResult = validateFormData(mail, pass, confirmPass);
@@ -93,20 +100,18 @@ public class SignUpPresenter implements SignUpContract.Presenter {
                                     .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                                         public void onComplete(@NonNull Task<GetTokenResult> task) {
                                             if (task.isSuccessful()) {
-                                                String idToken = task.getResult().getToken();
-                                                token=idToken;
-                                                Log.d(TAG, "onComplete: token  "+idToken);
-                                                // Send token to your backend via HTTPS
-                                                // ...
+                                                String token = task.getResult().getToken();
+                                                Log.d(TAG, "onComplete: token  " + token);
+
+                                                webService.sendFirebaseToken(token);
+
                                             } else {
                                                 // Handle error -> task.getException();
+                                                Log.e(TAG, "onComplete: Error : " + task.getException());
                                             }
                                         }
                                     });
 
-
-
-                            webService.temporaryMethodToCheckSSLwithServer(token,ca);
 
                             //sign up successfull
                             //TODO send verification email
@@ -202,6 +207,23 @@ public class SignUpPresenter implements SignUpContract.Presenter {
         } catch (FirebaseAuthUserCollisionException e) {
         } catch (Exception e) {
             Log.e(TAG, "handleFirebaseException: \n" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void onResponseReceive(JSONObject responseObject) {
+        Log.d(TAG, "onResponseReceive: Response : "+responseObject.toString());
+        //TODO process this response
+    }
+
+    @Override
+    public void onErrorReceive(VolleyError error) {
+        Log.e(TAG, "onErrorReceive: Error : " + error.getMessage());
+        Log.e(TAG, "onErrorReceive: Error cause : " + error.getCause() );
+        try{
+            throw new CertPathValidatorException(error);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

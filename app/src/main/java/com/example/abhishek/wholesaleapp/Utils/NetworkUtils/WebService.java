@@ -38,6 +38,8 @@ import javax.net.ssl.TrustManagerFactory;
 
 public class WebService {
 
+    private String TAG = "WebService";
+
     public static WebService instance;
     public static ServerResponse serverResponse;
     private Context context;
@@ -45,15 +47,16 @@ public class WebService {
 
     private RequestQueue requestQueue;
 
-    private WebService(Context context) {
+    private WebService(Context context, Certificate ca) {
+        this.ca = ca;
         requestQueue = Volley.newRequestQueue(context, new HurlStack(null, getSocketFactory()));
         serverResponse = new ServerResponse();
         this.context = context;
     }
 
-    public static WebService getWebServiceInstance(Context context) {
+    public static WebService getWebServiceInstance(Context context, Certificate ca) {
         if (instance == null) {
-            instance = new WebService(context);
+            instance = new WebService(context, ca);
         }
         return instance;
     }
@@ -62,14 +65,21 @@ public class WebService {
         return serverResponse;
     }
 
-    public void temporaryMethodToCheckSSLwithServer(String token, Certificate ca){
+    public void setCertificate(Certificate ca) {
+        this.ca = ca;
+    }
+
+    public void sendFirebaseToken(String token){
         String path = "/testWholesaleToken";
-        this.ca=ca;
         try{
             JSONObject headers = new JSONObject();
-            headers.put("authorization",token);
+            headers.put("Authorization",token);
+            headers.put("Content-Type","application/json");
 
-            sendRequest("POST", path, headers, null);
+            JSONObject body = new JSONObject();
+            body.put("Authorization",token);
+
+            sendRequest("POST", path, headers, body);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -84,17 +94,20 @@ public class WebService {
         } else if (requestMethod.equals("GET")) {
             method = Request.Method.GET;
         }
+        Log.d(TAG, "sendRequest: headers ::: "+headers);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(method, URL, headers
                 , new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 serverResponse.responseReceived(response);
+                Log.d(TAG, "onResponse: Response : "+response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                serverResponse.errorReceived();
+                Log.e(TAG, "onErrorResponse: Error : "+error );
+                serverResponse.errorReceived(error);
             }
         }) {
             @Override
@@ -142,8 +155,15 @@ public class WebService {
                 }
             };
 
+            HostnameVerifier hostnameVerifierTEMP = new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            };
 
-//            HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);/
+
+            HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifierTEMP);
             SSLContext context = null;
             context = SSLContext.getInstance("TLS");
 

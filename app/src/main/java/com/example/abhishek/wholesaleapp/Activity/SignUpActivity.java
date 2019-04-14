@@ -1,6 +1,7 @@
 package com.example.abhishek.wholesaleapp.Activity;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
@@ -24,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.abhishek.wholesaleapp.Contract.SignUpContract;
 import com.example.abhishek.wholesaleapp.Presenter.SignUpPresenter;
 import com.example.abhishek.wholesaleapp.R;
+import com.example.abhishek.wholesaleapp.Utils.NetworkUtils.WebService;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -65,21 +67,28 @@ public class SignUpActivity
         confirmPassEdittext = findViewById(R.id.signupactivity_confirm_pass_edittext);
         passEdittext.setOnEditorActionListener(this);
 
-        presenter = new SignUpPresenter(SignUpActivity.this, this);
+        //TEMP CODE ::: until implementation of DEPENDANCY INJECTION
+        Certificate ca = null;
+        try {
+
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            InputStream inputStream = getResources().openRawResource(R.raw.myrootca);
+            ca = cf.generateCertificate(inputStream);
+            presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        WebService webService = WebService.getWebServiceInstance(this, ca);
+        //TEMP CODE END
+
+        presenter = new SignUpPresenter(SignUpActivity.this, this, webService);
     }
 
     //UI Methods
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        try {
 
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            InputStream inputStream = getResources().openRawResource(R.raw.myrootca);
-            Certificate ca = cf.generateCertificate(inputStream);
-            presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText(),ca);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
         return true;
     }
 
@@ -98,9 +107,9 @@ public class SignUpActivity
             //CLOSE INPUT STREAM PROPERLY ::::::::: MEM LEAK
             inputStream.close();
 
-            presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText(), ca);
+            presenter.signUp(mailEdittext.getText(), passEdittext.getText(), confirmPassEdittext.getText());
 
-        }catch (Exception e ){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -118,122 +127,29 @@ public class SignUpActivity
         snackbar.show();
     }
 
-//
-//    //TEMP METHOD
-//    public void temp() {
-//        try {
-//            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-//            InputStream caInput = getResources().openRawResource(R.raw.myrootca);
-//            Certificate ca;
-//            ca = cf.generateCertificate(caInput);
-//            caInput.close();
-//
-//            String keyStoreType = KeyStore.getDefaultType();
-//            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-//            keyStore.load(null, null);
-//            keyStore.setCertificateEntry("ca", ca);
-//
-//            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-//            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-//            tmf.init(keyStore);
-//
-//            URL url = new URL("url");
-//            HttpsURLConnection urlConnection =
-//                    (HttpsURLConnection) url.openConnection();
-////                urlConnection.setSSLSocketFactory(getSocketFactory());
-//            InputStream in = urlConnection.getInputStream();
-////                copyInputStreamToOutputStream(in, System.out);
-//
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    //TEMP
+    private SSLContext trustCert() throws CertificateException, IOException, KeyStoreException,
+            NoSuchAlgorithmException, KeyManagementException {
+        AssetManager assetManager = getAssets();
+        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        Certificate ca = cf.generateCertificate(assetManager.open("myrootca.crt"));
 
-//    public void sendSSLRequest() {
-//      //  RequestQueue requestQueue = Volley.newRequestQueue(this, new HurlStack(null, getSocketFactory()));
-//        RequestQueue requestQueue = Volley.newRequestQueue(this);
-//        String url = "https://ec2-13-234-45-216.ap-south-1.compute.amazonaws.com:443";
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, url
-//                , new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                Log.d("SSL Response", "onResponse: " + response.toString());
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.e("Volley SSL Error", "onErrorResponse: " + error.toString());
-//                Log.e("Volley SSL Error", "onErrorResponse: message : " + error.getMessage());
-//            }
-//        });
-//        requestQueue.add(stringRequest);
-//    }
+        // Create a KeyStore containing our trusted CAs
+        String keyStoreType = KeyStore.getDefaultType();
+        KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+        keyStore.load(null, null);
+        keyStore.setCertificateEntry("ca", ca);
 
-//    private SSLSocketFactory getSocketFactory() {
-//
-//        CertificateFactory cf = null;
-//        try {
-//            cf = CertificateFactory.getInstance("X.509");
-//            InputStream caInput = getResources().openRawResource(R.raw.myrootca);
-//            Certificate ca;
-//            try {
-//                ca = cf.generateCertificate(caInput);
-//                Log.e("CERT", "ca=" + ((X509Certificate) ca).getSubjectDN());
-//            } finally {
-//                caInput.close();
-//            }
-//
-//
-//            String keyStoreType = KeyStore.getDefaultType();
-//            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-//            keyStore.load(null, null);
-//            keyStore.setCertificateEntry("ca", ca);
-//
-//
-//            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-//            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-//            tmf.init(keyStore);
-//
-//
-//            HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-//                @Override
-//                public boolean verify(String hostname, SSLSession session) {
-//
-//                    Log.e("CipherUsed", session.getCipherSuite());
-//                    return hostname.compareTo("ubuntu") == 0; //The Hostname of your server
-//
-//                }
-//            };
-//
-//
-////            HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);/
-//            SSLContext context = null;
-//            context = SSLContext.getInstance("TLS");
-//
-//            context.init(null, tmf.getTrustManagers(), null);
-//            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-//
-//            SSLSocketFactory sf = context.getSocketFactory();
-//
-//
-//            return sf;
-//
-//        } catch (CertificateException e) {
-//            e.printStackTrace();
-//        } catch (NoSuchAlgorithmException e) {
-//            e.printStackTrace();
-//        } catch (KeyStoreException e) {
-//            e.printStackTrace();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (KeyManagementException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return null;
-//    }
+        // Create a TrustManager that trusts the CAs in our KeyStore
+        String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+        tmf.init(keyStore);
+
+        // Create an SSLContext that uses our TrustManager
+        SSLContext context = SSLContext.getInstance("TLS");
+        context.init(null, tmf.getTrustManagers(), null);
+        return context;
+    }
+
 
 }
