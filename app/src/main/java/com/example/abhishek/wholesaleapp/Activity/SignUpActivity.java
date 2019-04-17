@@ -97,7 +97,6 @@ public class SignUpActivity
         gotoLoginIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(gotoLoginIntent);
     }
-
     public void SignUpButtonOnClick(View view) {
         try {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
@@ -126,7 +125,20 @@ public class SignUpActivity
         });
         snackbar.show();
     }
-
+    @Override
+    public void successEmail()
+    {
+        Intent gotomail = new Intent(SignUpActivity.this,SuccessfulEmailActivity.class);
+        gotomail.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(gotomail);
+    }
+    @Override
+    public void failedEmail()
+    {
+        Intent gotomail = new Intent(SignUpActivity.this,FailedEmailActivity.class);
+        gotomail.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(gotomail);
+    }
     //TEMP
     private SSLContext trustCert() throws CertificateException, IOException, KeyStoreException,
             NoSuchAlgorithmException, KeyManagementException {

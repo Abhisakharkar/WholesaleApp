@@ -15,6 +15,10 @@ public interface SignUpContract {
 
         public void showSnackbar(String message,int length);
 
+        public void successEmail();
+
+        public void failedEmail();
+
     }
 
     public interface Presenter {

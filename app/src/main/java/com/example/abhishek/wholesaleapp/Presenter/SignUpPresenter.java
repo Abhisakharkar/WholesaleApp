@@ -1,6 +1,7 @@
 package com.example.abhishek.wholesaleapp.Presenter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
@@ -13,6 +14,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.abhishek.wholesaleapp.Activity.SignUpActivity;
+import com.example.abhishek.wholesaleapp.Activity.SuccessfulEmailActivity;
 import com.example.abhishek.wholesaleapp.Contract.SignUpContract;
 
 import com.example.abhishek.wholesaleapp.Enum.SignUpEnum;
@@ -120,8 +123,10 @@ public class SignUpPresenter implements SignUpContract.Presenter, ResponseReceiv
                                     .addOnCompleteListener((verifyTask) -> {
                                         if (verifyTask.isSuccessful()) {
                                             Log.d(TAG, "signUp: verification emiail sent successfully !");
+                                            signUpView.successEmail();
                                         } else {
                                             Log.e(TAG, "signUp: send verification email error\n" + verifyTask.getException().getMessage());
+                                            signUpView.failedEmail();
                                         }
                                     });
                             //TODO save user data
