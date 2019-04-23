@@ -13,6 +13,7 @@ import com.example.abhishek.wholesaleapp.Enum.CredentialEnum;
 import com.example.abhishek.wholesaleapp.Enum.SignInEnum;
 import com.example.abhishek.wholesaleapp.R;
 import com.example.abhishek.wholesaleapp.SingletonClases.Firebase;
+import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.FirebaseSingletonCallback.FirebaseCallback;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ResponseReceiveListener;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ServerResponse;
 import com.example.abhishek.wholesaleapp.Utils.NetworkUtils.WebService;
@@ -38,13 +39,14 @@ import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.EMAIL_WRONG_
 import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.PASS_EMPTY;
 import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.PASS_WRONG_FORMAT;
 
-public class SignInPresenter implements SignInContract.Presenter,ResponseReceiveListener {
+public class SignInPresenter implements SignInContract.Presenter, ResponseReceiveListener {
     private String TAG = "SignInPresenter";
 
     private SignInContract.View signInView;
     private Context context;
     public WebService webService;
     private ServerResponse serverResponse;
+
     public SignInPresenter(Context context, SignInContract.View signInView, WebService webService) {
         this.context = context;
         this.signInView = signInView;
@@ -53,21 +55,34 @@ public class SignInPresenter implements SignInContract.Presenter,ResponseReceive
         serverResponse = WebService.getCallbackInstance();
         serverResponse.setResponseReceiveListener(this);
     }
+
     @Override
     public SignInEnum signIn(Editable mail, Editable pass) {
         String email = mail.toString();
         String password = pass.toString();
         CredentialEnum validateResult = validateFormData(mail, pass);
         if (validateResult == CredentialEnum.OK) {
-            Firebase firebase=Firebase.getInstance();
-            if (firebase.signIn(email,password)){
-                if (firebase.mailVerified()){
-                   return SignInEnum.EMAIL_VERIFIED;
-                } else{
+            Firebase firebase = Firebase.getInstance();
+            if (firebase.signIn(email, password, new FirebaseCallback() {
+                @Override
+                public void onSuccess() {
+                    //TODO firebase sign in successful
+                }
+
+                @Override
+                public void onFailure() {
+                    //TODO firebase Sign In Failed
+                }
+            })) {
+
+
+                if (firebase.mailVerified()) {
+                    return SignInEnum.EMAIL_VERIFIED;
+                } else {
                     return SignInEnum.EMAIL_NOT_VERIFIED;
                 }
 
-            }else
+            } else
                 return SignInEnum.FAIL;
 
         } else {
@@ -140,17 +155,17 @@ public class SignInPresenter implements SignInContract.Presenter,ResponseReceive
 
     @Override
     public void onResponseReceive(JSONObject responseObject) {
-        Log.d(TAG, "onResponseReceive: Response : "+responseObject.toString());
+        Log.d(TAG, "onResponseReceive: Response : " + responseObject.toString());
         //TODO process this response
     }
 
     @Override
     public void onErrorReceive(VolleyError error) {
         Log.e(TAG, "onErrorReceive: Error : " + error.getMessage());
-        Log.e(TAG, "onErrorReceive: Error cause : " + error.getCause() );
-        try{
+        Log.e(TAG, "onErrorReceive: Error cause : " + error.getCause());
+        try {
             throw new CertPathValidatorException(error);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
