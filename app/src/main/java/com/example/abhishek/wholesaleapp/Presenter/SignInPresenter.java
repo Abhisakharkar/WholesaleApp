@@ -9,8 +9,10 @@ import android.util.Patterns;
 
 import com.android.volley.VolleyError;
 import com.example.abhishek.wholesaleapp.Contract.SignInContract;
-import com.example.abhishek.wholesaleapp.Enum.SignUpEnum;
+import com.example.abhishek.wholesaleapp.Enum.CredentialEnum;
+import com.example.abhishek.wholesaleapp.Enum.SignInEnum;
 import com.example.abhishek.wholesaleapp.R;
+import com.example.abhishek.wholesaleapp.SingletonClases.Firebase;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ResponseReceiveListener;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ServerResponse;
 import com.example.abhishek.wholesaleapp.Utils.NetworkUtils.WebService;
@@ -31,10 +33,10 @@ import org.json.JSONObject;
 import java.security.cert.CertPathValidatorException;
 import java.util.regex.Pattern;
 
-import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.EMAIL_EMPTY;
-import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.EMAIL_WRONG_FORMAT;
-import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.PASS_EMPTY;
-import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.PASS_WRONG_FORMAT;
+import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.EMAIL_EMPTY;
+import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.EMAIL_WRONG_FORMAT;
+import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.PASS_EMPTY;
+import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.PASS_WRONG_FORMAT;
 
 public class SignInPresenter implements SignInContract.Presenter,ResponseReceiveListener {
     private String TAG = "SignInPresenter";
@@ -52,54 +54,31 @@ public class SignInPresenter implements SignInContract.Presenter,ResponseReceive
         serverResponse.setResponseReceiveListener(this);
     }
     @Override
-    public void signIn(Editable mail, Editable pass) {
+    public SignInEnum signIn(Editable mail, Editable pass) {
         String email = mail.toString();
         String password = pass.toString();
-        SignUpEnum validateResult = validateFormData(mail, pass);
-        if (validateResult == SignUpEnum.OK) {
+        CredentialEnum validateResult = validateFormData(mail, pass);
+        if (validateResult == CredentialEnum.OK) {
+            Firebase firebase=Firebase.getInstance();
+            if (firebase.signIn(email,password)){
+                if (firebase.mailVerified()){
+                   return SignInEnum.EMAIL_VERIFIED;
+                } else{
+                    return SignInEnum.EMAIL_NOT_VERIFIED;
+                }
 
-            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            firebaseAuth
-                    .signInWithEmailAndPassword(email,password)
-                    .addOnCompleteListener((task) -> {
-                        if (task.isSuccessful()) {
-
-                            FirebaseUser mUser = firebaseAuth.getCurrentUser();
-                            mUser.getIdToken(true)
-                                    .addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-                                        public void onComplete(@NonNull Task<GetTokenResult> task) {
-                                            if (task.isSuccessful()) {
-                                                String token = task.getResult().getToken();
-                                                Log.d(TAG, "onComplete: token  " + token);
-
-                                                webService.sendFirebaseToken(token);
-
-                                            } else {
-                                                // Handle error -> task.getException();
-                                                Log.e(TAG, "onComplete: Error : " + task.getException());
-                                            }
-                                        }
-                                    });
-
-
-                            //sign in successfull
-
-                        } else {
-                            Log.e(TAG, "signIn: " + task.getException());
-                            signInView.showSnackbar("Error : See Logs", Snackbar.LENGTH_LONG);
-
-                            handleFirebaseException(task.getException());
-
-                        }
-                    });
+            }else
+                return SignInEnum.FAIL;
 
         } else {
             showValidatorMessage(validateResult);
+            return SignInEnum.FAIL;
         }
+
     }
 
     @Override
-    public void showValidatorMessage(SignUpEnum validationResult) {
+    public void showValidatorMessage(CredentialEnum validationResult) {
         int Snackbar_Length = Snackbar.LENGTH_SHORT;
         switch (validationResult) {
             case EMAIL_EMPTY:
@@ -118,7 +97,7 @@ public class SignInPresenter implements SignInContract.Presenter,ResponseReceive
     }
 
     @Override
-    public SignUpEnum validateFormData(Editable mailEditable, Editable passEditable) {
+    public CredentialEnum validateFormData(Editable mailEditable, Editable passEditable) {
 
         String mail = mailEditable.toString().trim();
         if (mail.isEmpty()) {
@@ -137,7 +116,7 @@ public class SignInPresenter implements SignInContract.Presenter,ResponseReceive
         if (!PASSWORD_PATTERN.matcher(pass).matches()) {
             return PASS_WRONG_FORMAT;
         }
-        return SignUpEnum.OK;
+        return CredentialEnum.OK;
     }
 
     @Override

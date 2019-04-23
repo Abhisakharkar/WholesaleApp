@@ -7,15 +7,10 @@ import android.text.Editable;
 import android.util.Log;
 import android.util.Patterns;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.abhishek.wholesaleapp.Contract.SignUpContract;
 
-import com.example.abhishek.wholesaleapp.Enum.SignUpEnum;
+import com.example.abhishek.wholesaleapp.Enum.CredentialEnum;
 import com.example.abhishek.wholesaleapp.R;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ResponseReceiveListener;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ServerResponse;
@@ -34,32 +29,14 @@ import com.google.firebase.auth.GetTokenResult;
 
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertPathValidatorException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.regex.Pattern;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
-
-import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.EMAIL_EMPTY;
-import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.EMAIL_WRONG_FORMAT;
-import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.PASS_EMPTY;
-import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.PASS_NOT_SAME;
-import static com.example.abhishek.wholesaleapp.Enum.SignUpEnum.PASS_WRONG_FORMAT;
+import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.EMAIL_EMPTY;
+import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.EMAIL_WRONG_FORMAT;
+import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.PASS_EMPTY;
+import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.PASS_NOT_SAME;
+import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.PASS_WRONG_FORMAT;
 
 public class SignUpPresenter implements SignUpContract.Presenter, ResponseReceiveListener {
 
@@ -84,8 +61,8 @@ public class SignUpPresenter implements SignUpContract.Presenter, ResponseReceiv
     public void signUp(Editable mail, Editable pass, Editable confirmPass) {
         String email = mail.toString();
         String password = pass.toString();
-        SignUpEnum validateResult = validateFormData(mail, pass, confirmPass);
-        if (validateResult == SignUpEnum.OK) {
+        CredentialEnum validateResult = validateFormData(mail, pass, confirmPass);
+        if (validateResult == CredentialEnum.OK) {
 
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             firebaseAuth
@@ -142,7 +119,7 @@ public class SignUpPresenter implements SignUpContract.Presenter, ResponseReceiv
     }
 
     @Override
-    public void showValidatorMessage(SignUpEnum validationResult) {
+    public void showValidatorMessage(CredentialEnum validationResult) {
         int Snackbar_Length = Snackbar.LENGTH_SHORT;
         switch (validationResult) {
             case EMAIL_EMPTY:
@@ -164,7 +141,7 @@ public class SignUpPresenter implements SignUpContract.Presenter, ResponseReceiv
     }
 
     @Override
-    public SignUpEnum validateFormData(Editable mailEditable, Editable passEditable, Editable confirmPassEditable) {
+    public CredentialEnum validateFormData(Editable mailEditable, Editable passEditable, Editable confirmPassEditable) {
 
         String mail = mailEditable.toString().trim();
         if (mail.isEmpty()) {
@@ -188,7 +165,7 @@ public class SignUpPresenter implements SignUpContract.Presenter, ResponseReceiv
         if (!PASSWORD_PATTERN.matcher(pass).matches()) {
             return PASS_WRONG_FORMAT;
         }
-        return SignUpEnum.OK;
+        return CredentialEnum.OK;
     }
 
     @Override

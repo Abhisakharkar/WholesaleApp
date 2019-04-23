@@ -2,29 +2,24 @@ package com.example.abhishek.wholesaleapp.Contract;
 
 import android.text.Editable;
 
-import com.example.abhishek.wholesaleapp.Enum.SignUpEnum;
-import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-
-import java.security.cert.Certificate;
+import com.example.abhishek.wholesaleapp.Enum.CredentialEnum;
 
 public interface SignUpContract {
 
-    public interface View {
+     interface View {
 
-        public void showSnackbar(String message,int length);
+         void showSnackbar(String message,int length);
 
     }
 
-    public interface Presenter {
+     interface Presenter {
 
-        public void signUp(Editable mail, Editable pass, Editable confirmPass);
+         void signUp(Editable mail, Editable pass, Editable confirmPass);
 
-        public SignUpEnum validateFormData(Editable mail, Editable pass, Editable confirmPass);
+         CredentialEnum validateFormData(Editable mail, Editable pass, Editable confirmPass);
 
-        public void showValidatorMessage(SignUpEnum validationResult);
+         void showValidatorMessage(CredentialEnum validationResult);
 
-        public void handleFirebaseException(Exception exception);
+         void handleFirebaseException(Exception exception);
     }
 }

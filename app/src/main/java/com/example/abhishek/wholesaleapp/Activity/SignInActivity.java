@@ -23,6 +23,7 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.abhishek.wholesaleapp.Contract.SignInContract;
+import com.example.abhishek.wholesaleapp.Enum.SignInEnum;
 import com.example.abhishek.wholesaleapp.Presenter.SignInPresenter;
 import com.example.abhishek.wholesaleapp.R;
 import com.example.abhishek.wholesaleapp.Utils.NetworkUtils.WebService;
@@ -54,6 +55,7 @@ public class SignInActivity extends AppCompatActivity implements SignInContract.
     private Button signInBtn;
 
     private SignInPresenter presenter;
+    private static final String TAG = "SignInActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +64,14 @@ public class SignInActivity extends AppCompatActivity implements SignInContract.
         parentLayout = findViewById(R.id.signinactivity_parent_layout);
         mailEdittext = findViewById(R.id.signinactivity_mail_edittext);
         passEdittext = findViewById(R.id.signinactivity_pass_edittext);
-        passEdittext.setOnEditorActionListener(this);//TEMP CODE ::: until implementation of DEPENDANCY INJECTION
+        passEdittext.setOnEditorActionListener(this);
+        //TEMP CODE ::: until implementation of DEPENDANCY INJECTION
         Certificate ca = null;
         try {
 
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             InputStream inputStream = getResources().openRawResource(R.raw.myrootca);
             ca = cf.generateCertificate(inputStream);
-            presenter.signIn(mailEdittext.getText(), passEdittext.getText());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,18 +87,23 @@ public class SignInActivity extends AppCompatActivity implements SignInContract.
         return true;
     }
     public void SignInButtonOnClick(View view) {
-        try {
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            InputStream inputStream = getResources().openRawResource(R.raw.myrootca);
-            Certificate ca = cf.generateCertificate(inputStream);
-
-            inputStream.close();
-
-            presenter.signIn(mailEdittext.getText(), passEdittext.getText());
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        SignInEnum result=presenter.signIn(mailEdittext.getText(), passEdittext.getText());
+        if (result== SignInEnum.EMAIL_NOT_VERIFIED){
+            Intent gotoVerifyEmail = new Intent(SignInActivity.this, VerifyEmailActivity.class);
+            gotoVerifyEmail.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(gotoVerifyEmail);
         }
+        else if (result==SignInEnum.FAIL){
+            //log and toast error
+            Log.d(TAG, "SignInButtonOnClick: sign in error");
+
+        }else if (result==SignInEnum.EMAIL_VERIFIED){
+            //check for mandatory data and if filled go to home otherwise go to profile
+            Log.d(TAG, "SignInButtonOnClick: email verify failed");
+
+        }
+
+
     }
 
     @Override
@@ -111,26 +118,10 @@ public class SignInActivity extends AppCompatActivity implements SignInContract.
         snackbar.show();
     }
 
-    private SSLContext trustCert() throws CertificateException, IOException, KeyStoreException,
-            NoSuchAlgorithmException, KeyManagementException {
-        AssetManager assetManager = getAssets();
-        CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        Certificate ca = cf.generateCertificate(assetManager.open("myrootca.crt"));
-
-        // Create a KeyStore containing our trusted CAs
-        String keyStoreType = KeyStore.getDefaultType();
-        KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-        keyStore.load(null, null);
-        keyStore.setCertificateEntry("ca", ca);
-
-        // Create a TrustManager that trusts the CAs in our KeyStore
-        String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-        tmf.init(keyStore);
-
-        // Create an SSLContext that uses our TrustManager
-        SSLContext context = SSLContext.getInstance("TLS");
-        context.init(null, tmf.getTrustManagers(), null);
-        return context;
+    public void signupLinkButtonOnClick(View view) {
+        Intent gotosignupIntent = new Intent(SignInActivity.this, SignUpActivity.class);
+        gotosignupIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(gotosignupIntent);
     }
+
 }

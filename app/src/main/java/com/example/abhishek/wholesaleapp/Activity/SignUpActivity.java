@@ -127,29 +127,6 @@ public class SignUpActivity
         snackbar.show();
     }
 
-    //TEMP
-    private SSLContext trustCert() throws CertificateException, IOException, KeyStoreException,
-            NoSuchAlgorithmException, KeyManagementException {
-        AssetManager assetManager = getAssets();
-        CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        Certificate ca = cf.generateCertificate(assetManager.open("myrootca.crt"));
-
-        // Create a KeyStore containing our trusted CAs
-        String keyStoreType = KeyStore.getDefaultType();
-        KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-        keyStore.load(null, null);
-        keyStore.setCertificateEntry("ca", ca);
-
-        // Create a TrustManager that trusts the CAs in our KeyStore
-        String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-        tmf.init(keyStore);
-
-        // Create an SSLContext that uses our TrustManager
-        SSLContext context = SSLContext.getInstance("TLS");
-        context.init(null, tmf.getTrustManagers(), null);
-        return context;
-    }
 
 
 }
