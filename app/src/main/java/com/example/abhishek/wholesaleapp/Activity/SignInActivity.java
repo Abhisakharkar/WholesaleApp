@@ -87,22 +87,7 @@ public class SignInActivity extends AppCompatActivity implements SignInContract.
         return true;
     }
     public void SignInButtonOnClick(View view) {
-        SignInEnum result=presenter.signIn(mailEdittext.getText(), passEdittext.getText());
-        if (result== SignInEnum.EMAIL_NOT_VERIFIED){
-            Intent gotoVerifyEmail = new Intent(SignInActivity.this, VerifyEmailActivity.class);
-            gotoVerifyEmail.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivity(gotoVerifyEmail);
-        }
-        else if (result==SignInEnum.FAIL){
-            //log and toast error
-            Log.d(TAG, "SignInButtonOnClick: sign in error");
-
-        }else if (result==SignInEnum.EMAIL_VERIFIED){
-            //check for mandatory data and if filled go to home otherwise go to profile
-            Log.d(TAG, "SignInButtonOnClick: email verify failed");
-
-        }
-
+     presenter.signIn(mailEdittext.getText(), passEdittext.getText());
 
     }
 
@@ -118,10 +103,33 @@ public class SignInActivity extends AppCompatActivity implements SignInContract.
         snackbar.show();
     }
 
+    @Override
+    public void switchActivity(SignInEnum result) {
+
+        if (result== SignInEnum.EMAIL_NOT_VERIFIED){
+            Intent intent = new Intent(SignInActivity.this, VerifyEmailActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+        }
+        else if (result==SignInEnum.FAIL){
+            //log and toast error
+            Log.d(TAG, "SignInButtonOnClick: sign in error");
+
+        }else if (result==SignInEnum.EMAIL_VERIFIED){
+            //check for mandatory data and if filled go to home otherwise go to profile
+            Log.d(TAG, "SignInButtonOnClick: email verify failed");
+            Intent intent = new Intent(SignInActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+        }
+
+
+    }
+
     public void signupLinkButtonOnClick(View view) {
-        Intent gotosignupIntent = new Intent(SignInActivity.this, SignUpActivity.class);
-        gotosignupIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(gotosignupIntent);
+        Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
     }
 
 }

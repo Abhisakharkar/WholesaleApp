@@ -1,21 +1,15 @@
 package com.example.abhishek.wholesaleapp.SingletonClases;
 
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.FirebaseSingletonCallback.FirebaseCallback;
-import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ServerResponse;
+import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.Callback.SuccessAndFailureCallback;
+import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.Callback.SuccessCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import static android.content.ContentValues.TAG;
 
@@ -39,7 +33,7 @@ public class Firebase {
         return mInstance;
     }
 
-    public boolean signIn(String email, String password, FirebaseCallback callback) {
+    public void signIn(String email, String password, SuccessCallback callback) {
         firebaseAuth
                 .signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener((task) -> {
@@ -49,13 +43,10 @@ public class Firebase {
                         callback.onSuccess();
                     } else {
                         Log.e(TAG, "signIn: " + task.getException());
-                        callback.onFailure();
                         // signInView.showSnackbar("Error : See Logs", Snackbar.LENGTH_LONG);
                         // handleFirebaseException(task.getException());
                     }
                 });
-
-        return true;
     }
 
     public String getTokenFromFirebase() {
@@ -84,7 +75,17 @@ public class Firebase {
     }
 
     public boolean mailVerified() {
+        if (mUser!=null)
         return mUser.isEmailVerified();
+        else
+            return false;
+    }
+
+    public void sendVerificationMail(){
+        if (mUser == null) {
+            mUser = firebaseAuth.getCurrentUser();
+        }
+        mUser.sendEmailVerification();
     }
 
 

@@ -6,4 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".Activity.VerifyEmailActivity">
 
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/link_sent_message"
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:layout_margin="15dp"
+        android:paddingTop="50dp"
+        />
+
+    <Button
+        android:id="@+id/resend_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="ResendBtnOnClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="15dp"
+        android:text="@string/resend_verification_link"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:onClick="ContinueBtnOnClick"
+        android:text="@string/continue_txt"
+        app:layout_constraintBottom_toTopOf="@id/resend_btn"/>
+
 </android.support.constraint.ConstraintLayout>

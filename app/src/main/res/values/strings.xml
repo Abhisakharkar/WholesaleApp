@@ -5,4 +5,7 @@
     <string name="email_wrong_format_string">ENTER RIGHT EMAIL</string>
     <string name="pass_not_same_string">PASSWORDS DO NOT MATCH</string>
     <string name="pass_wrong_format_string">PASSWORD WRONG FORMAT</string>
+    <string name="link_sent_message">An verification link has been sent to your registered email address. please verify and sign in again</string>
+    <string name="resend_verification_link">Resend</string>
+    <string name="continue_txt">Continue</string>
 </resources>

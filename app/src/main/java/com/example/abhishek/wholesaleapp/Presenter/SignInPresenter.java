@@ -1,7 +1,6 @@
 package com.example.abhishek.wholesaleapp.Presenter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.util.Log;
@@ -13,21 +12,18 @@ import com.example.abhishek.wholesaleapp.Enum.CredentialEnum;
 import com.example.abhishek.wholesaleapp.Enum.SignInEnum;
 import com.example.abhishek.wholesaleapp.R;
 import com.example.abhishek.wholesaleapp.SingletonClases.Firebase;
-import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.FirebaseSingletonCallback.FirebaseCallback;
+import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.Callback.SuccessAndFailureCallback;
+import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.Callback.SuccessCallback;
+
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ResponseReceiveListener;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ServerResponse;
 import com.example.abhishek.wholesaleapp.Utils.NetworkUtils.WebService;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthActionCodeException;
 import com.google.firebase.auth.FirebaseAuthEmailException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 
 import org.json.JSONObject;
 
@@ -57,37 +53,26 @@ public class SignInPresenter implements SignInContract.Presenter, ResponseReceiv
     }
 
     @Override
-    public SignInEnum signIn(Editable mail, Editable pass) {
+    public void signIn(Editable mail, Editable pass) {
         String email = mail.toString();
         String password = pass.toString();
         CredentialEnum validateResult = validateFormData(mail, pass);
         if (validateResult == CredentialEnum.OK) {
             Firebase firebase = Firebase.getInstance();
-            if (firebase.signIn(email, password, new FirebaseCallback() {
+            firebase.signIn(email, password, new SuccessCallback() {
                 @Override
                 public void onSuccess() {
-                    //TODO firebase sign in successful
+                   if (firebase.mailVerified()) {
+                        //check for mandatory data
+                       signInView.switchActivity(SignInEnum.EMAIL_VERIFIED);
+                   }else {
+                      signInView.switchActivity(SignInEnum.EMAIL_NOT_VERIFIED);
+                   }
                 }
-
-                @Override
-                public void onFailure() {
-                    //TODO firebase Sign In Failed
-                }
-            })) {
-
-
-                if (firebase.mailVerified()) {
-                    return SignInEnum.EMAIL_VERIFIED;
-                } else {
-                    return SignInEnum.EMAIL_NOT_VERIFIED;
-                }
-
-            } else
-                return SignInEnum.FAIL;
+            });
 
         } else {
             showValidatorMessage(validateResult);
-            return SignInEnum.FAIL;
         }
 
     }

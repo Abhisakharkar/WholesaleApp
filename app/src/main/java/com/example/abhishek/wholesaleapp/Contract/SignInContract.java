@@ -9,10 +9,11 @@ public interface SignInContract {
 
      interface View{
          void showSnackbar(String message,int length);
+         void switchActivity(SignInEnum result);
     }
 
      interface Presenter{
-         SignInEnum signIn(Editable mail, Editable pass);
+         void signIn(Editable mail, Editable pass);
 
          CredentialEnum validateFormData(Editable mail, Editable pass);
 
