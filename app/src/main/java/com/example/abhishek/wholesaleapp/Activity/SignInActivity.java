@@ -1,8 +1,6 @@
 package com.example.abhishek.wholesaleapp.Activity;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,39 +12,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BaseHttpStack;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.abhishek.wholesaleapp.Contract.SignInContract;
-import com.example.abhishek.wholesaleapp.Enum.SignInEnum;
+import com.example.abhishek.wholesaleapp.Utils.Enum.SignInEnum;
 import com.example.abhishek.wholesaleapp.Presenter.SignInPresenter;
 import com.example.abhishek.wholesaleapp.R;
-import com.example.abhishek.wholesaleapp.Utils.NetworkUtils.WebService;
+import com.example.abhishek.wholesaleapp.Model.NetworkUtils.WebService;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManagerFactory;
 
 public class SignInActivity extends AppCompatActivity implements SignInContract.View,TextView.OnEditorActionListener {
 

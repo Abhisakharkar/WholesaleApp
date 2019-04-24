@@ -2,7 +2,7 @@ package com.example.abhishek.wholesaleapp.Contract;
 
 import android.text.Editable;
 
-import com.example.abhishek.wholesaleapp.Enum.CredentialEnum;
+import com.example.abhishek.wholesaleapp.Utils.Enum.CredentialEnum;
 
 public interface SignUpContract {
 

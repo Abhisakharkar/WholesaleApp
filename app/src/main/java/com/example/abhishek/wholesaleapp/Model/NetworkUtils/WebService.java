@@ -1,7 +1,6 @@
-package com.example.abhishek.wholesaleapp.Utils.NetworkUtils;
+package com.example.abhishek.wholesaleapp.Model.NetworkUtils;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -12,14 +11,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.abhishek.wholesaleapp.R;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ServerResponse;
 
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -28,7 +25,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 

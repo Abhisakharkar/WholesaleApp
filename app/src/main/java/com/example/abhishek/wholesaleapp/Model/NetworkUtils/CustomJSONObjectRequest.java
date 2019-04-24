@@ -1,4 +1,4 @@
-package com.example.abhishek.wholesaleapp.Utils.NetworkUtils;
+package com.example.abhishek.wholesaleapp.Model.NetworkUtils;
 
 
 

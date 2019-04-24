@@ -1,4 +1,4 @@
-package com.example.abhishek.wholesaleapp.Enum;
+package com.example.abhishek.wholesaleapp.Utils.Enum;
 
 public enum CredentialEnum {
 

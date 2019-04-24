@@ -10,11 +10,11 @@ import android.util.Patterns;
 import com.android.volley.VolleyError;
 import com.example.abhishek.wholesaleapp.Contract.SignUpContract;
 
-import com.example.abhishek.wholesaleapp.Enum.CredentialEnum;
+import com.example.abhishek.wholesaleapp.Utils.Enum.CredentialEnum;
 import com.example.abhishek.wholesaleapp.R;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ResponseReceiveListener;
 import com.example.abhishek.wholesaleapp.Utils.CustomCallbacks.ServerResponseCallback.ServerResponse;
-import com.example.abhishek.wholesaleapp.Utils.NetworkUtils.WebService;
+import com.example.abhishek.wholesaleapp.Model.NetworkUtils.WebService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,11 +32,11 @@ import org.json.JSONObject;
 import java.security.cert.CertPathValidatorException;
 import java.util.regex.Pattern;
 
-import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.EMAIL_EMPTY;
-import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.EMAIL_WRONG_FORMAT;
-import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.PASS_EMPTY;
-import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.PASS_NOT_SAME;
-import static com.example.abhishek.wholesaleapp.Enum.CredentialEnum.PASS_WRONG_FORMAT;
+import static com.example.abhishek.wholesaleapp.Utils.Enum.CredentialEnum.EMAIL_EMPTY;
+import static com.example.abhishek.wholesaleapp.Utils.Enum.CredentialEnum.EMAIL_WRONG_FORMAT;
+import static com.example.abhishek.wholesaleapp.Utils.Enum.CredentialEnum.PASS_EMPTY;
+import static com.example.abhishek.wholesaleapp.Utils.Enum.CredentialEnum.PASS_NOT_SAME;
+import static com.example.abhishek.wholesaleapp.Utils.Enum.CredentialEnum.PASS_WRONG_FORMAT;
 
 public class SignUpPresenter implements SignUpContract.Presenter, ResponseReceiveListener {
 

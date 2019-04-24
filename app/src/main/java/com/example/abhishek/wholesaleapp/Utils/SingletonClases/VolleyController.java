@@ -1,4 +1,4 @@
-package com.example.abhishek.wholesaleapp.SingletonClases;
+package com.example.abhishek.wholesaleapp.Utils.SingletonClases;
 
 
 import android.content.Context;
@@ -28,7 +28,10 @@ public class VolleyController    {
         if (mRequestQueue == null) {
             // getApplicationContext() is key. It should not be activity context,
             // or else RequestQueue won't last for the lifetime of your app
-            mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
+//            mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
+
+            //pass application context to VolleyController
+            mRequestQueue = Volley.newRequestQueue(mCtx);
         }
         return mRequestQueue;
     }

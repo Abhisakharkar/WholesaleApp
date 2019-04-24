@@ -2,8 +2,8 @@ package com.example.abhishek.wholesaleapp.Contract;
 
 import android.text.Editable;
 
-import com.example.abhishek.wholesaleapp.Enum.CredentialEnum;
-import com.example.abhishek.wholesaleapp.Enum.SignInEnum;
+import com.example.abhishek.wholesaleapp.Utils.Enum.CredentialEnum;
+import com.example.abhishek.wholesaleapp.Utils.Enum.SignInEnum;
 
 public interface SignInContract {
 
@@ -12,7 +12,7 @@ public interface SignInContract {
     }
 
      interface Presenter{
-         SignInEnum signIn(Editable mail, Editable pass);
+         void signIn(Editable mail, Editable pass);
 
          CredentialEnum validateFormData(Editable mail, Editable pass);
 
